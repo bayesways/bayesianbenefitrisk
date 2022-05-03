@@ -35,6 +35,8 @@ This repository contains strictly synthetic data to facilitate demonstrating the
     $ cd src
     $ python create_synthetic_data.py
 
+Any reference to "real data" in this repository refers to the synthetic data created in this step.
+
 
 ## How to use:
 
@@ -42,8 +44,6 @@ This repository contains strictly synthetic data to facilitate demonstrating the
 2. Compute PPP values and Cross Validation Indexes with `compute_ppp.py` and `compute_cv.py` respectively. 
 3. Run simulations on synthetic clinical data with `run_simulations.py`. 
 4. Run sequential algorithm with `run_seq_ct.py`. This script takes an argument for `sim_case=0` loads the synthetic data in `./dat`, and `sim_case=1` generates new synthetic data. The scripts also takes an argument for running the first `t` data points with the MCMC method to initialiaze the particles. To run without the MCMC initialization run choose `run_init_mcmc=False`.
-5. Sequential populations scores are added to the IBIS algorithm
-6. MCDA results offline and online algorithms are in notebooks `4.1`, `4.2` and `4.3`
 
 
 Additional Notes on Usage: 
