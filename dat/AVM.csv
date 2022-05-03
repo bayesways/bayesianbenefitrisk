@@ -1,0 +1,4 @@
+,subjid,efhgba1_diff,effpg_diff,Diarrhoea,Dyspepsia,Nausea,Vomiting
+count,150.0,150.0,150.0,150.0,150.0,150.0,150.0
+mean,642.09,-2.3,-4.05,0.15,0.11,0.17,0.05
+std,359.15,1.15,2.49,0.35,0.31,0.37,0.23
