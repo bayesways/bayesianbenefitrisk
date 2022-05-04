@@ -1,9 +1,9 @@
-from cmath import exp
+from codebase.file_utils import save_obj
 from codebase.classes_data import Data
 import argparse
-import numpy as np
 from codebase.file_utils import make_folder, path_backslash
 from run_smclvm import run_smclvm
+from pdb import set_trace
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -36,6 +36,7 @@ else:
 
 exp_data = Data(name='seq_data')
 exp_data.generate(sim_case=args.simcase)
+save_obj(exp_data, 'group_data', log_dir)
 
 smclvm = run_smclvm(
     exp_data = exp_data,

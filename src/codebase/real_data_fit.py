@@ -6,6 +6,7 @@ from sklearn.model_selection import KFold
 from codebase.data import interweave_df
 from codebase.mcda import get_scores_array, get_scores_df, get_prob
 from scipy.stats import multivariate_normal, norm
+from scipy.special import expit
 from pdb import set_trace
 
 
@@ -420,17 +421,13 @@ def compute_results(ps):
     for i in range(mcmc_samples):
         for grp in range(num_groups):
             z = norm.rvs()
-            yy_lat[i,  grp] = (
-                ps["alpha_b"][i,  grp] + np.squeeze(
-                    np.outer(z,ps["beta_b"][i])
-                    )
-            )
+            yy_lat[i,  grp] = ps["alpha_b"][i,  grp] + (z*ps["beta_b"][i,  grp, :, 1])
     for grp in range(num_groups):
         pp_samples[:,  grp, 2:] = yy_lat[:,  grp]
 
     for i in range(mcmc_samples):
         for grp in range(num_groups):
-            Marg_cov = ps["Marg_cov_cont"][i]
+            Marg_cov = ps["Marg_cov_cont"][i, grp]
             pp_samples[i,  grp, :2] = multivariate_normal.rvs(
                 mean=ps["alpha_c"][i,  grp], cov=Marg_cov
             )
@@ -456,6 +453,17 @@ def compute_results(ps):
 
 def get_population_scores(ps, size):
     num_groups = ps['alpha'].shape[1]
-    scores_array = get_scores_array(ps["alpha"], size, num_groups)
+    num_bin = ps["beta_b"].shape[1]
+    n_z=10000
+
+    # Compute average population probabilities for binary items
+    ps_samples = ps["alpha"].copy()
+    for m in range(size):
+        for g in range(num_groups):
+            z = norm.rvs(size=n_z).repeat(num_bin).reshape(n_z,num_bin)
+            probs = ps["alpha_b"][m,g] + np.multiply(z,ps["beta_b"][m])
+            ps_samples[m,g, 2:] = np.mean(expit(probs),0)
+
+    scores_array = get_scores_array(ps_samples, size, num_groups)
     
     return scores_array
