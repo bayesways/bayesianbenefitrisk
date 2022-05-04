@@ -48,4 +48,4 @@ for fold_index in range(num_of_folds):
         model_num = args.stan_model)
     
 a = [Ds[fold] for fold in range(num_of_folds)]
-print("\n%s Sum over Folds %.2f" % (name, np.sum(a)))
+print("\nSum over Folds %.2f" % (np.sum(a)))

@@ -23,8 +23,6 @@ parser.add_argument(
     "--seed2", help="", type=int, default=6)
 parser.add_argument("-cov_num", "--cov_num",
                     help="number of covariance structure", type=int, default=1)
-parser.add_argument("-run", "--run_simulation",
-                    help="run simulation", type=bool, default=False)
 parser.add_argument("-diff", "--diff_grps",
                     help="difference between groups", type=int, default=0)
 parser.add_argument("-gd", "--gen_data",
@@ -80,32 +78,25 @@ else:
         log_dir = log_dir + "/"
     print("\n\nReading from existing directory: %s" % log_dir)
 
-if args.run_simulation:
-
-    run_simulation(
-        log_dir,
-        existing_directory = args.existing_directory,
-        stan_model = args.stan_model,
-        gen_data = args.gen_data,
-        corr_sim = args.corr_sim,
-        cov_num = args.cov_num,
-        effects_rho = args.effects_rho,
-        gen_model = args.gen_model,
-        data_sim = args.data_sim,
-        nsim_data = args.nsim_data,
-        ppp_cv = args.ppp_cv,
-        n_splits = args.n_splits,
-        cv_random_seed = args.cv_random_seed,
-        print_model = args.print_model,
-        num_samples = args.num_samples,
-        num_warmup = args.num_warmup,
-        num_chains = args.num_chains,
-        diff_grps = args.diff_grps,
-        seed1= args.seed1,
-        seed2=args.seed2
-    )
-
-if args.ppp_cv == 'cv':
-    print("can't compute results with CV flag on")
-else:
-    compute_results(log_dir)
+run_simulation(
+    log_dir,
+    existing_directory = args.existing_directory,
+    stan_model = args.stan_model,
+    gen_data = args.gen_data,
+    corr_sim = args.corr_sim,
+    cov_num = args.cov_num,
+    effects_rho = args.effects_rho,
+    gen_model = args.gen_model,
+    data_sim = args.data_sim,
+    nsim_data = args.nsim_data,
+    ppp_cv = args.ppp_cv,
+    n_splits = args.n_splits,
+    cv_random_seed = args.cv_random_seed,
+    print_model = args.print_model,
+    num_samples = args.num_samples,
+    num_warmup = args.num_warmup,
+    num_chains = args.num_chains,
+    diff_grps = args.diff_grps,
+    seed1= args.seed1,
+    seed2=args.seed2
+)

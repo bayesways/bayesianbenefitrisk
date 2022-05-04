@@ -1,11 +1,9 @@
+from cmath import exp
 from codebase.classes_data import Data
 import argparse
 import numpy as np
-from codebase.file_utils import save_obj, load_obj, make_folder, path_backslash
-from codebase.ibis import exp_and_normalise
+from codebase.file_utils import make_folder, path_backslash
 from run_smclvm import run_smclvm
-from scipy.special import logsumexp
-from pdb import set_trace
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -19,7 +17,11 @@ parser.add_argument(
     default=None,
 )
 parser.add_argument("-gm", "--gen_model", help="generate model", type=bool, default=0)
-parser.add_argument("-model", "--model_num", help="model number", type=int, default=0)
+parser.add_argument("-simcase", "--simcase", help="number of particles", type=int, default=0)
+parser.add_argument("-size", "--size", help="number of particles", type=int, default=100)
+parser.add_argument("-run_init_mcmc", "--run_init_mcmc", help="run MCMC to initial th particles", type=bool, default=False)
+parser.add_argument("-init_t", "--init_t", help="number of initial data points for MCMC", type=int, default=100)
+
 args = parser.parse_args()
 
 
@@ -33,7 +35,15 @@ else:
     print("\n\nReading from existing directory: %s" % log_dir)
 
 exp_data = Data(name='seq_data')
-# exp_data.load_data()
-exp_data.generate(sim_case=0)
+exp_data.generate(sim_case=args.simcase)
 
-smclvm = run_smclvm(exp_data, 0, 1000, args.gen_model, log_dir)
+smclvm = run_smclvm(
+    exp_data = exp_data,
+    init_t = args.init_t,
+    size = args.size,
+    gen_model = args.gen_model,
+    log_dir = log_dir,
+    degeneracy_limit=0.5,
+    name="ibis_lvm",
+    run_init_mcmc=args.run_init_mcmc
+    )

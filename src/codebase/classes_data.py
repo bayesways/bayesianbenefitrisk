@@ -1,4 +1,5 @@
-from codebase.data import get_final_dataset, interweave_df
+import pandas as pd
+from codebase.data import interweave_df
 from codebase.file_utils import save_obj, load_obj
 from codebase.data import create_group_data
 from pdb import set_trace
@@ -10,10 +11,7 @@ class Data:
 
     def generate(self, sim_case=0, interweave=True):
         if sim_case==0:
-            df = get_final_dataset()
-            # df = df.sample(frac=1, random_state=1)
-            indx_order = load_obj('index_order', "../dat/")
-            df = df.loc[indx_order]
+            df = pd.read_csv("../dat/synthetic_dataset.csv")
             if interweave:
                 df = interweave_df(df)
             else:
@@ -22,8 +20,6 @@ class Data:
             y = df.iloc[:, 2:].values
             df["atrtgrp"] = df["atrtgrp"].replace({"AVM": 1, "MET": 2, "RSG": 3})
             tmp_dct["grp"] = df["atrtgrp"].values.astype(int)
-            # tmp_dct["K"] = 2
-            # tmp_dct["J"] = 6
             tmp_dct["Kc"] = 2
             tmp_dct["Kb"] = 4
             tmp_dct["y"] = y

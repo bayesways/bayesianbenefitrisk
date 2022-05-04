@@ -19,9 +19,6 @@ parser.add_argument("stan_model", help="", type=int, default=1)
 parser.add_argument(
     "-cov_num", "--cov_num", help="number of covariance structure", type=int, default=1
 )
-parser.add_argument(
-    "-run", "--run_simulation", help="run simulation", type=int, default=0
-)
 parser.add_argument("-pool", "--cov_pool", help="pool cov matrix", type=int, default=1)
 parser.add_argument(
     "-gd", "--gen_data", help="gen fresh data", type=bool, default=False
@@ -75,26 +72,20 @@ else:
         log_dir = log_dir + "/"
     print("\n\nReading from existing directory: %s" % log_dir)
 
-if args.run_simulation == 1:
 
-    run_fit_for_real_data(
-        log_dir,
-        existing_directory=args.existing_directory,
-        stan_model=args.stan_model,
-        gen_data=args.gen_data,
-        gen_model=args.gen_model,
-        data_sim=args.data_sim,
-        cov_num=args.cov_num,
-        ppp_cv=args.ppp_cv,
-        n_splits=args.n_splits,
-        cv_random_seed=args.cv_random_seed,
-        print_model=args.print_model,
-        num_samples=args.num_samples,
-        num_warmup=args.num_warmup,
-        num_chains=args.num_chains,
-    )
-
-if args.ppp_cv == "cv":
-    print("can't compute results with CV flag on")
-else:
-    compute_results(log_dir)
+run_fit_for_real_data(
+    log_dir,
+    existing_directory=args.existing_directory,
+    stan_model=args.stan_model,
+    gen_data=args.gen_data,
+    gen_model=args.gen_model,
+    data_sim=args.data_sim,
+    cov_num=args.cov_num,
+    ppp_cv=args.ppp_cv,
+    n_splits=args.n_splits,
+    cv_random_seed=args.cv_random_seed,
+    print_model=args.print_model,
+    num_samples=args.num_samples,
+    num_warmup=args.num_warmup,
+    num_chains=args.num_chains,
+)

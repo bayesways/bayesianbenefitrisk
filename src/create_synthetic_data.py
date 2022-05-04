@@ -3,7 +3,9 @@ import numpy as np
 from scipy.stats import norm, bernoulli
 
 
-def produce_sample_dataset():
+def produce_sample_dataset(seed=0):
+    np.random.seed(seed=seed)
+
     dfgs = []
 
     for g in ['MET', 'RSG', 'AVM']:
