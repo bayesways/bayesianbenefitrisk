@@ -384,12 +384,16 @@ def compute_results(ps):
 
     mcmc_samples = ps["alpha"].shape[0]
     num_groups = ps["alpha"].shape[1]
+    num_items = ps["alpha"].shape[2]
+    num_bin = ps["alpha_b"].shape[2]
+    num_cont = ps["alpha_c"].shape[2]
+    num_factors = ps["beta"].shape[-1]
 
     for i in range(ps['beta_b'].shape[0]):
         ps['beta_b'][i] = np.sign(ps['beta_b'][i,0]) * ps['beta_b'][i]
         
     if "beta" not in ps.keys():
-        ps_beta = np.zeros((ps['beta_b'].shape[0], 6, 2))
+        ps_beta = np.zeros((ps['beta_b'].shape[0], num_items, num_factors))
         for i in  range(ps['beta_b'].shape[0]):
             ps_beta[i,0,0] = 1.
             ps_beta[i,1,0] = ps['beta1'][i]
@@ -415,15 +419,17 @@ def compute_results(ps):
     )
 
 
-    pp_samples = np.empty((mcmc_samples, num_groups, 6))
+    pp_samples = np.empty((mcmc_samples, num_groups, num_items))
 
-    yy_lat = np.empty((mcmc_samples, num_groups, 4))
-    for i in range(mcmc_samples):
+    n_z=10000
+
+    # Compute average population probabilities for binary items with Monte Carlo
+    for m in range(mcmc_samples):
         for grp in range(num_groups):
-            z = norm.rvs()
-            yy_lat[i,  grp] = ps["alpha_b"][i,  grp] + (z*ps["beta_b"][i,  grp, :, 1])
-    for grp in range(num_groups):
-        pp_samples[:,  grp, 2:] = yy_lat[:,  grp]
+            z = norm.rvs(size=n_z).repeat(num_bin).reshape(n_z,num_bin)
+            probs = ps["alpha_b"][m,grp] + np.multiply(z,ps["beta_b"][m, grp,:, 1])
+            pp_samples[m,  grp, 2:] = np.mean(expit(probs),0)
+
 
     for i in range(mcmc_samples):
         for grp in range(num_groups):
@@ -432,38 +438,20 @@ def compute_results(ps):
                 mean=ps["alpha_c"][i,  grp], cov=Marg_cov
             )
 
-    scores_array_ind = get_scores_array(
-        pp_samples, mcmc_samples, num_groups
-    )
-    scoresdf_ind = get_scores_df(scores_array_ind, ["AVM", "MET", "RSG"])
-    print("\nIndividual Score")
-    print("\n")
-    print(
-        " P(AVM < MET) = %.2f"
-        % ( get_prob(scoresdf_ind, "AVM", "MET"))
-    )
-    print(
-        " P(AVM < RSG) = %.2f"
-        % ( get_prob(scoresdf_ind, "AVM", "RSG"))
-    )
-    print(
-        " P(MET < RSG) = %.2f"
-        % ( get_prob(scoresdf_ind, "MET", "RSG"))
-    )
-
+    
 def get_population_scores(ps, size):
     num_groups = ps['alpha'].shape[1]
     num_bin = ps["beta_b"].shape[1]
     n_z=10000
 
     # Compute average population probabilities for binary items
-    ps_samples = ps["alpha"].copy()
+    pp_samples = ps["alpha"].copy()
     for m in range(size):
         for g in range(num_groups):
             z = norm.rvs(size=n_z).repeat(num_bin).reshape(n_z,num_bin)
             probs = ps["alpha_b"][m,g] + np.multiply(z,ps["beta_b"][m])
-            ps_samples[m,g, 2:] = np.mean(expit(probs),0)
+            pp_samples[m,g, 2:] = np.mean(expit(probs),0)
 
-    scores_array = get_scores_array(ps_samples, size, num_groups)
+    scores_array = get_scores_array(pp_samples, size, num_groups)
     
     return scores_array
