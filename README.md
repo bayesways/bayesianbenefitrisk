@@ -43,7 +43,7 @@ Any reference to "real data" in this repository refers to the synthetic data cre
 1. Run experiment on data with `run_clinical_trial.py` to fit the model. Pass the flag `-cv cv` to fit models for cross validation. The results will be saved in `./src/log`. You can select the model from the available options (see list of available models further down this page).
 2. Compute PPP values and Cross Validation Indexes with `compute_ppp.py` and `compute_cv.py` respectively passing the directory where the results are stored in (from step 1). 
 3. Run simulations for control and treatment groups with `run_simulations.py`. This will create datasets and fit the models all in one script. Works similarly to `run_clinical_trial.py`.
-4. Run sequential algorithm used in the paper with `run_seq_ct.py`. This script takes an argument for `-sim_case 0` loads the synthetic data in `./dat`, and `-sim_case 1` generates new synthetic data. The scripts also accepts `-run_init_mcmc 1` as an argument to run an MCMC chain to initialize the particles using the first `t` (`-init_t t`) data points. Th
+4. Run sequential algorithm used in the paper with `run_seq_ct.py`. This script takes an argument for `-sim_case 0` loads the synthetic data in `./dat`, and `-sim_case 1` generates new synthetic data. The scripts also accepts `-run_init_mcmc 1` as an argument to run an MCMC chain to initialize the particles using the first `t` (`-init_t t`) data points. 
 
 
 Additional Notes on Usage: 
